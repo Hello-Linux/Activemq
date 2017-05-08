@@ -24,7 +24,7 @@ ADD supervisord.conf /etc/supervisord.conf
 #get activemq package
 ADD http://203.187.160.133:9011/mirror.bit.edu.cn/c3pr90ntc0td/apache//activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz /usr/local/
 #unpack
-RUN tar -zxvf /usr/local/apache-activemq-5.14.5-bin.tar.gz
+RUN tar -zxvf /usr/local/apache-activemq-5.14.5-bin.tar.gz -C /usr/local/
 #mount data for local server
 VOLUME ["/usr/local/apache-activemq-5.14.5/data"]
 #Label
