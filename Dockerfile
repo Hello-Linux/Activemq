@@ -38,6 +38,6 @@ RUN sed -i '51a ACTIVEMQ_OPTS_MEMORY=" -server -Xmx2g -Xms2g"\nACTIVEMQ_HOME="/u
 #ADD configuration
 COPY config /tmp/
 #copy configuration to directory
-RUN cp /tmp/config/supervisord.conf /etc/supervisord.conf && cp /tmp/config/activemq.xml /usr/local/apache-activemq-5.14.5/conf/
+RUN cp /tmp/supervisord.conf /etc/supervisord.conf && cp /tmp/activemq.xml /usr/local/apache-activemq-5.14.5/conf/
 #run supervisord
 CMD ["/usr/bin/supervisord","-c","/etc/supervisord.conf"]
