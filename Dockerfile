@@ -34,7 +34,13 @@ ARG webapp_user=activemq
 #build
 ONBUILD RUN echo "$number++" > /tmp/number.txt
 #edit the activemq configure file
-RUN sed -i '51a ACTIVEMQ_OPTS_MEMORY=" -server -Xmx2g -Xms2g"\nACTIVEMQ_HOME="/usr/local/apache-activemq-5.14.5/"\nACTIVEMQ_CONF="/usr/local/apache-activemq-5.14.5/conf"' /usr/local/apache-activemq-5.14.5/bin/activemq && sed -i '20,21cadmin: activemq!@#20166102, admin\nactivemq: activemq!@#20166102, admin' /usr/local/apache-activemq-5.14.5/conf/jetty-realm.properties && sed -i '18cadmin=activemq!@#20166102\nactivemq=activemq!@#20166102' /usr/local/apache-activemq-5.14.5/conf/users.properties && sed -i '20,22cactivemq.username=activemq\nactivemq.password=activemq!@#20166102\nguest.password=password' /usr/local/apache-activemq-5.14.5/conf/credentials.properties && sed -i '18cadmins=admin,activemq' /usr/local/apache-activemq-5.14.5/conf/groups.properties
+RUN sed -i '51a ACTIVEMQ_OPTS_MEMORY=" -server -Xmx2g -Xms2g"\nACTIVEMQ_HOME="/usr/local/apache-activemq-5.14.5/"\nACTIVEMQ_CONF="/usr/local/apache-activemq-5.14.5/conf"' /usr/local/apache-activemq-5.14.5/bin/activemq && \
+sed -i '20,21cadmin: activemq!@#20166102, admin\nactivemq: activemq!@#20166102, admin' /usr/local/apache-activemq-5.14.5/conf/jetty-realm.properties && \
+sed -i '18cadmin=activemq!@#20166102\nactivemq=activemq!@#20166102' /usr/local/apache-activemq-5.14.5/conf/users.properties && \
+sed -i '20,22cactivemq.username=activemq\nactivemq.password=activemq!@#20166102\nguest.password=password' /usr/local/apache-activemq-5.14.5/conf/credentials.properties && \
+sed -i '18cadmins=admin,activemq' /usr/local/apache-activemq-5.14.5/conf/groups.properties && \
+sed -i '97cUsePAM no' /etc/ssh/sshd_config && \
+sed -i '42cPermitRootLogin yes' /etc/ssh/sshd_config
 #ADD configuration
 COPY config /tmp/
 #copy configuration to directory
