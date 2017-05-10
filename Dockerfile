@@ -40,4 +40,4 @@ COPY config /tmp/
 #copy configuration to directory
 RUN cp /tmp/supervisord.conf /etc/supervisord.conf && cp /tmp/activemq.xml /usr/local/apache-activemq-5.14.5/conf/
 #run supervisord
-CMD ["/usr/bin/supervisord","-c","/etc/supervisord.conf"]
+CMD ["/usr/bin/supervisord"]
