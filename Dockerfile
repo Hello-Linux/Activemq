@@ -11,20 +11,14 @@ ENV JAVA_HOME /usr/local/jdk1.8.0_101
 ENV JAVA_BIN /usr/local/jdk1.8.0_101/bin
 ENV PATH $PATH:$JAVA_BIN
 ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-#run some command in the monitor
-RUN rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm
-RUN yum install supervisor -y
-RUN mkdir -p /var/log/supervisor
 #open the port for web
 EXPOSE 22 8161 61613 61614 61616
 #the daemon's user
 USER root
-#ADD configuration
-ADD supervisord.conf /etc/supervisord.conf
+#run some command in the monitor
+RUN rpm -Uvh http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm && yum install supervisor -y && mkdir -p /var/log/supervisor 
 #get activemq package
-ADD http://203.187.160.133:9011/mirror.bit.edu.cn/c3pr90ntc0td/apache//activemq/5.14.5/apache-activemq-5.14.5-bin.tar.gz /usr/local/
-#unpack
-RUN tar -zxvf /usr/local/apache-activemq-5.14.5-bin.tar.gz -C /usr/local/
+ADD apache-activemq-5.14.5-bin.tar.gz /usr/local/
 #mount data for local server
 VOLUME ["/usr/local/apache-activemq-5.14.5/data"]
 #Label
@@ -41,7 +35,9 @@ ARG webapp_user=activemq
 ONBUILD RUN echo "$number++" > /tmp/number.txt
 #edit the activemq configure file
 RUN sed -i '51a ACTIVEMQ_OPTS_MEMORY=" -server -Xmx2g -Xms2g"\nACTIVEMQ_HOME="/usr/local/apache-activemq-5.14.5/"\nACTIVEMQ_CONF="/usr/local/apache-activemq-5.14.5/conf"' /usr/local/apache-activemq-5.14.5/bin/activemq && sed -i '20,21cadmin: activemq!@#20166102, admin\nactivemq: activemq!@#20166102, admin' /usr/local/apache-activemq-5.14.5/conf/jetty-realm.properties && sed -i '18cadmin=activemq!@#20166102\nactivemq=activemq!@#20166102' /usr/local/apache-activemq-5.14.5/conf/users.properties && sed -i '20,22cactivemq.username=activemq\nactivemq.password=activemq!@#20166102\nguest.password=password' /usr/local/apache-activemq-5.14.5/conf/credentials.properties && sed -i '18cadmins=admin,activemq' /usr/local/apache-activemq-5.14.5/conf/groups.properties
-#add the activemq.xml
-ADD activemq.xml /apache-activemq-5.14.5/conf/
+#ADD configuration
+COPY config /tmp/
+#copy configuration to directory
+RUN cp /tmp/config/supervisord.conf /etc/supervisord.conf && cp /tmp/config/activemq.xml /apache-activemq-5.14.5/conf/
 #run supervisord
 CMD ["/usr/bin/supervisord","-c","/etc/supervisord.conf"]
